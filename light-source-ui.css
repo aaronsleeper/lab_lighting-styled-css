@@ -1,0 +1,68 @@
+:root {
+  /* Light position */
+  --ls-x: 50vw;
+  --ls-y: 10vh;
+  --ls-z: 600px;
+
+  /* Light properties */
+  --ls-intensity: 1;
+  --ls-ambient: 0.10;
+  --ls-softness: 0.35;
+  --ls-range: 1400px;
+
+  /* Light color — LCH channels */
+  --ls-L: 96%;
+  --ls-C: 12;
+  --ls-H: 85deg;
+  --ls-color: lch(var(--ls-L) var(--ls-C) var(--ls-H));
+
+  /* Shadow color — LCH channels */
+  --ls-shadow-L: 22%;
+  --ls-shadow-C: 4;
+  --ls-shadow-H: 230deg;
+  --ls-shadow-color: lch(var(--ls-shadow-L) var(--ls-shadow-C) var(--ls-shadow-H) / 0.35);
+}
+
+.lit {
+  position: relative;
+
+  /* Per-element variables supplied by runtime */
+  --el-cx: 0px;
+  --el-cy: 0px;
+  --el-dx: 0px;
+  --el-dy: 0px;
+  --el-distance: 0px;
+  --el-angle-deg: 0deg;
+  --el-falloff: 1;
+  --el-lightness: 1;
+
+  /* Authoring knobs */
+  --elevation: 2;
+  --roughness: 0.5;
+  --metallic: 0.0;
+  --base: var(--surface, Canvas);
+
+  /* Channel specific transforms */
+  --L-dim: calc(var(--ls-L) * (0.85 + 0.15 * var(--el-falloff)));
+  --H-amb: calc(var(--ls-H) + (1 - var(--el-falloff)) * 10deg);
+  background-color: lch(var(--L-dim) var(--ls-C) var(--H-amb));
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.lit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+
+  /* Specular pop via chroma */
+  --C-spec: calc(var(--ls-C) + (1 - var(--roughness)) * var(--el-falloff) * 6);
+  background: radial-gradient(
+    80% 60% at calc(50% - 20% * cos(var(--el-angle-deg)))
+                  calc(50% - 20% * sin(var(--el-angle-deg))),
+    lch(var(--ls-L) var(--C-spec) var(--ls-H) / 0.35),
+    transparent 60%
+  );
+}
