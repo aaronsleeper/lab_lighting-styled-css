@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Light Source UI Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="light-source-ui.css">
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; }
+    header { position: fixed; top: 0; left: 0; right: 0; padding: 0.5rem 1rem; background: #fff; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
+    main { margin-top: 60px; }
+    section.spacer { height: 500px; display: flex; align-items: center; justify-content: center; }
+    .card { width: 200px; height: 120px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .lit.card::before { content: "d:" var(--el-distance) " a:" var(--el-angle-deg); position: absolute; top: 4px; left: 4px; font: 12px/1.2 monospace; padding: 2px 4px; background: rgba(255,255,255,0.7); color: #000; border-radius: 4px; }
+    footer { padding: 2rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <label>Light X <input type="range" id="light-x" min="0" max="100" value="50"></label>
+    <label>Light Y <input type="range" id="light-y" min="0" max="100" value="10"></label>
+  </header>
+  <main>
+    <section class="spacer"><div class="lit card" data-roughness="0.2">Card A</div></section>
+    <section class="spacer"><div class="lit card" data-roughness="0.8">Card B</div></section>
+    <section class="spacer"><div class="lit card" data-elevation="4">Card C</div></section>
+    <section class="spacer"><div class="lit card" data-metallic="0.5">Card D</div></section>
+  </main>
+  <footer>End of demo</footer>
+  <script type="module">
+    import LightSourceUI from './light-source-ui.mjs';
+    const ls = new LightSourceUI();
+    ls.start();
+
+    const root = document.documentElement;
+    const xInput = document.getElementById('light-x');
+    const yInput = document.getElementById('light-y');
+
+    function updateLight() {
+      root.style.setProperty('--ls-x', xInput.value + 'vw');
+      root.style.setProperty('--ls-y', yInput.value + 'vh');
+      ls.schedule();
+    }
+
+    xInput.addEventListener('input', updateLight);
+    yInput.addEventListener('input', updateLight);
+  </script>
+</body>
+</html>
